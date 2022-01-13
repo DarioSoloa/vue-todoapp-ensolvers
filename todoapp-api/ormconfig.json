@@ -1,0 +1,19 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "dario",
+    "password": "password",
+    "database": "todoList",
+    "entities": [
+        "src/**/*.entity.ts"
+    ],
+    "synchronize": false,
+    "migrationsTableName": "migrations",
+    "migrations": [
+        "src/database/migrations/*.ts"
+    ],
+    "cli": {
+        "migrationsDir": "src/database/migrations"
+    }
+}
