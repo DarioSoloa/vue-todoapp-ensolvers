@@ -26,7 +26,7 @@
               </td>
               <td>
                 <div :class="{ completed: todo.completed == true }">
-                  {{ todo.title }}
+                  {{ todo.name }}
                 </div>
               </td>
               <td>
@@ -54,6 +54,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -61,28 +63,25 @@ export default {
     };
   },
   created: function () {
-    this.fetchTodos();
+    this.getAllTodos();
   },
   methods: {
-    fetchTodos() {
-      fetch("http://localhost/todos/")
-        .then((response) => response.json())
-        .then((dataResponse) => {
-          console.log(dataResponse);
-          this.todos = [];
-          this.todos = dataResponse;
+    getAllTodos() {
+      axios
+        .get("http://localhost:3000/api/todo/")
+        .then((response) => {
+          this.todos = response.data;
         })
-        .catch(console.log);
+        .catch((e) => console.log(e));
     },
     removeTodo(id) {
-      console.log(id);
-      fetch("http://localhost/todos/?remove=" + id)
-        .then((response) => response.json())
-        .then((dataResponse) => {
-          console.log(dataResponse);
-          window.location.href = "todoList";
+      axios
+        .delete("http://localhost:3000/api/todo/" + id)
+        .then((response) => {
+          console.log(response);
         })
-        .catch(console.log);
+        .catch((e) => console.log(e));
+      window.location.href = "todoList";
     },
     changeStatus(id, status) {
       if (status == false) {
@@ -90,20 +89,15 @@ export default {
       } else if (status == true) {
         realStatus = false;
       }
-      var dataSend = {
-        id: id,
-        completed: realStatus,
-      };
-      console.log(dataSend);
-      fetch("http://localhost/todos/?toggle=" + id, {
-        method: "POST",
-        body: JSON.stringify(dataSend),
-      })
-        .then((response) => response.json())
-        .then((dataResponse) => {
-          console.log(dataResponse);
-          window.location.href = "../todoList";
-        });
+      axios
+        .put("http://localhost:3000/api/todo/" + id, {
+          completed: realStatus,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((e) => console.log(e));
+      window.location.href = "todoList";
     },
   },
 };

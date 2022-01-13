@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
 import AddTodo from '../components/AddTodo.vue'
 import EditTodo from '../components/EditTodo.vue'
 import TodoList from '../components/TodoList.vue'

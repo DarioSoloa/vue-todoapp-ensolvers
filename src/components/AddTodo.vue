@@ -9,10 +9,10 @@
             <input
               type="text"
               class="form-control"
-              name="title"
-              id="title"
+              name="name"
+              id="name"
               required
-              v-model="todo.title"
+              v-model="todo.name"
               aria-describedby="helpId"
             />
             <small id="helpId" class="form-text text-muted"
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -40,19 +42,15 @@ export default {
   },
   methods: {
     addTodo() {
-      console.log(this.todo);
-      var dataSend = {
-        title: this.todo.title,
-      };
-      fetch("http://localhost/todos/?insert=1", {
-        method: "POST",
-        body: JSON.stringify(dataSend),
-      })
-        .then((response) => response.json())
-        .then((dataResponse) => {
-          console.log(dataResponse);
-          window.location.href = "todoList";
-        });
+      axios
+        .post("http://localhost:3000/api/todo/", {
+          name: this.todo.name,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((e) => console.log(e));
+      window.location.href = "todoList";
     },
   },
 };

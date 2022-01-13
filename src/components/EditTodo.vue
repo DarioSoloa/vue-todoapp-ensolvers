@@ -1,18 +1,18 @@
 <template>
   <div class="container">
     <div class="card">
-      <div class="card-header">Editting Task "{{ todo.title }}"</div>
+      <div class="card-header">Editting Task "{{ todo.name }}"</div>
       <div class="card-body">
         <form v-on:submit.prevent="updateTodo">
           <div class="form-group">
-            <label for="nombre">Title</label>
+            <label for="name">Title</label>
             <input
               type="text"
               class="form-control"
-              name="title"
-              id="title"
+              name="name"
+              id="name"
               required
-              v-model="todo.title"
+              v-model="todo.name"
               aria-describedby="helpId"
               placeholder="Title"
             />
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -40,33 +42,27 @@ export default {
     };
   },
   created: function () {
-    this.getInfoById();
+    this.getTodoById();
   },
   methods: {
-    getInfoById() {
-      fetch("http://localhost/todos/?consult=" + this.$route.params.id)
-        .then((response) => response.json())
-        .then((dataResponse) => {
-          console.log(dataResponse);
-          this.todo = dataResponse[0];
+    getTodoById() {
+      axios
+        .get("http://localhost:3000/api/todo/" + this.$route.params.id)
+        .then((response) => {
+          this.todo = response.data;
         })
-        .catch(console.log);
+        .catch((e) => console.log(e));
     },
     updateTodo() {
-      var dataSend = {
-        id: this.$route.params.id,
-        title: this.todo.title,
-        completed: this.todo.completed,
-      };
-      fetch("http://localhost/todos/?update=" + this.$route.params.id, {
-        method: "POST",
-        body: JSON.stringify(dataSend),
-      })
-        .then((response) => response.json())
-        .then((dataResponse) => {
-          console.log(dataResponse);
-          window.location.href = "../todoList";
-        });
+      axios
+        .put("http://localhost:3000/api/todo/" + this.$route.params.id, {
+          name: this.todo.name,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((e) => console.log(e));
+      window.location.href = "../todoList";
     },
   },
 };
